@@ -4,221 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles.css">
     <title>Document</title>
 </head>
 <body>
-    <header>
-        <h1>Shopify App Workshop</h1>
-    </header>
-    <section>
-        <h2>Welcome to Shopify App Development</h2>
-        <p>Shopify embedded apps are a wonderful way to extend the functionality of your store and provide a seamless experience for the vendor. Today we will go through setting up a custom embeded application. We will be leveraging tools provided by Shopify to help us get our app authenticated and up and running. One of the major benefits of creating an app in this way is that we will be able to embed the app directly in our merchants Shopify admin.</p>
+  
+    <div class="wrapper--grey"> 
+        <h1 class="up-five-title">Shopify App Workshop</h1>
+        <section>
+            <h2 class="primary-title">Welcome to Shopify App Development</h2>
+            <p>Shopify embedded apps are a wonderful way to extend the functionality of your store and provide a seamless experience for the vendor. Today we will go through setting up a custom embeded application. We will be leveraging tools provided by Shopify to help us get our app authenticated and up and running. One of the major benefits of creating an app in this way is that we will be able to embed the app directly in our merchants Shopify admin.</p>
+            
+        </section>
+        <section>
+            <h2 class="primary-title">Getting Started on Shopify</h2>
+            <p>Shopify offers a multitude of resources to help with development. One of these tools is the Shopify partner account. With a partner account you can create development stores to test out your themes and applicaitons.</p>
+            <p>To get started today make sure you have a partner account. You can <a href="https://www.shopify.ca/partners" target="_blank">sign up for a partner account</a></p>
+            <p>Now create a development store. This will act as a sandbox where we can use our app. Once you have created your development store log in to the store admin and take a look around.</p>
+            <p>In the app we create today we are going to work with product information from the Shopify store. Let's set up our store with some products so that we have something to look at in our app later. Download <a href="bicycles.csv" download>this product csv</a> and upload it to the products section in your store.</p>
+        </section>
+        <section>
+            <h2 class="primary-title">Create a new rails application</h2>
+            <p>Now that we have our store set up we are going to create our application. We'll start by creating a new Rails application and then we'll set it up to authenticate with our Shopify store.</p>
+            <p>If you're not familiar with Ruby on Rails, no problem. We are going to use a few terminal commands to create a new Ruby on Rails application and set it up with the <a href="https://github.com/Shopify/shopify_app" target="_blank">Shopify App Gem</a> to fecilitate authenticaiton.</p>
+            <p>To start open your terminal and navigate to wherever on your computer you would like to keep your application. Once in the correct directory, create a new Ruby on Rails application by running:</p>
+    <pre><code data-language="ruby">
+    rails new [appname]
+    </code></pre>
+            <p>Then go into the root directory of your app</p>
+    <pre><code data-language="ruby">
+    $ cd [appname]
+    </code></pre>
+            <p>Once in the root directory of your app run</p>
+    <pre><code data-language="ruby">
+    echo "gem 'shopify_app'" >> Gemfile
+    </code></pre>
+            <p>This will add the shopify_app gem to your gemfile. You can open up your Gemfile and see wherer the gem was added</p>
+            <p>Finally, still in the root directory, run</p>
+    <pre><code data-language="ruby">
+    $ bundle install
+    </code></pre>
+            <p>That gives us the base set up for our applicaiton. Let's start up the rails server and check out our app locally. Running the following command in the root directory of your app will start up the server.</p>
+    <pre><code data-language="ruby">
+    rails s
+    </code></pre>
+        </section>
+        <section>
+            <h2 class="primary-title">Get Your App Token and Secret</h2>
+            <p>Now that we have created our Rails application we are going to generate an app token and secret on the Shopify end.</p>
+            <p>Back in your partner dashboard navigate to the apps tab and create a new app.</p>
+            <img src="images/create-new-app.png" alt="">
+            <p>You can call your app whatever you like. Where it says <strong>app url</strong> for now we are going to put in the localhost address where our rails application is being served. This is likely <strong>http://localhost:3000/</strong>. Make sure you include the url protocol.</p>
+            <p>Create the app and then under overview make sure you white list the following redirection url <strong>http://localhost:3000/auth/shopify/callback</strong></p>
+            <p>Now that you have created the app, we are going to grab the credentials we need to authenticate. At the top you'll see a green box with a button to <strong>Get API credentials</strong>.</p>
+            <img src="images/get-api-credentials.png" alt="">
+            <p>Down at the bottom of the screen in the <strong>App credentials</strong> section you'll see you have your <strong>API key</strong> and <strong>API secret key</strong>. Keep this page open as we will be using these in a second.</p>
+            <p>Back in your terminal, still in the root directory of your app, we are going to run the shopify app gem default generator to create the install, shop and home_controller.</p>
+    <pre><code data-language="ruby">
+    rails generate shopify_app --apikey your_api_key --secret your_secret
+    </code></pre>
+            <p>The generator will create a new migration. Under db > migrate in your rails app check out the create shops migration. It should look something like this:</p>
+    <pre><code data-language="ruby">
+    class CreateShops < ActiveRecord::Migration[5.0]
+      def self.up
+        create_table :shops  do |t|
+          t.string :shopify_domain, null: false
+          t.string :shopify_token, null: false
+          t.timestamps
+        end
+
+        add_index :shops, :shopify_domain, unique: true
+      end
+
+      def self.down
+        drop_table :shops
+      end
+    end
+    </code></pre>
+            <p>If all looks good run the migration</p>
+    <pre><code data-language="ruby">
+    $ rake db:migrate
+    </code></pre>
+            <p>Check out the <strong>schema.rb</strong> file and you'll see you should have a shops table.</p>
+            <p>Let's bring it all together. In your terminal start up your rails application by running</p>
+    <pre><code data-language="ruby">
+    $ rails s
+    </code></pre>
+            <p>Head to http://localhost:3000/ and you should see a screen where you can input the shop name to connect your app. Enter in the url for your development store.</p>
+            <p>You'll probably see a screen that looks something like this:</p>
+            <img src="images/error-screen.png" alt="">
+            <p>We're seeing this because we haven't finished hooking up our Rails applciaiton with the app credentials we generated in Shopify. We'll do that next✨</p>
+
+        </section>
+        <section>
+            <h2 class="primary-title">Setting Up Your Environment Variables</h2>
+            <p>In order to authenticate our app we need to include the api key and secret, but we want to make sure that these are not publicly available. To do so we will use the rails dotenv gem.</p>
+            <p>In your gemfile add:</p>
+    <pre><code data-language="ruby">
+    #Gemfile
+    gem 'dotenv-rails'
+    </code></pre>
+            <p>In your terminal run</p>
+    <pre><code data-language="ruby">
+    $ bundle install
+    </code></pre>
+            <p>In the root of your project create a new .env file. Make sure to include this file in your .gitignore so you do not push your private keys public later.</p>
+            <p>In your .env file add:</p>
+    <pre><code data-language="ruby">
+    #.env
+    api_key=your_api_key
+    api_secret=your_api_secret
+    </code></pre>
+            <p>In the config > initializers > shopify_app.rb file add the reference to your api_key and api_secret environment variables. It will look something like this:</p>
+    <pre><code data-language="ruby">
+    ShopifyApp.configure do |config|
+      config.application_name = "My Shopify App"
+      config.api_key = ENV['api_key']
+      config.secret = ENV['api_secret']
+      config.scope = "read_orders, read_products"
+      config.embedded_app = true
+      config.after_authenticate_job = false
+      config.session_repository = Shop
+    end
+    </code></pre>
+            <p>We're just about ready to connect the app to our development store. We just need to check one more configuration on the app we created in the Shopify Partner dashboard to make sure it is enabled as an embeded application. Click on the app you created and navigate to the extensions tab. Make sure that the section <strong>Embed in Shopify admin</strong> is enabled.</p>
+            <p>Great! We are now ready to install our app on our dev store. Make sure your rails server is running and navigate to <strong>http://localhost:3000</strong>.</p>
+            <img src="images/install-app-screen.png" alt="">
+            <p>Enter the name of your store and install your app.</p>
+            <p>When you open up your app you'll likely see a screen like this:</p>
+            <img src="images/requests-blocked-screen.png" alt="">
+            <p>We will be addressing this next.</p>
+        </section>
+        <section>
+            <h2 class="primary-title">Setting up ngrok for secure local development</h2>
+            <p>We are seeing the error screen above because our app on http://localhost:3000 is not being served over a secure network. In order to get our embeded app to work we need to make sure our app has an SSL certificate. To set this up for local development we are going to use a service called <a href="https://ngrok.com/" target="_blank">ngrok</a>.</p>
+            <p>Let's get ngrok set up.</p>
+            <p>Sign up or log in to the ngrok site and download the version of ngrok for your system.</p>
+            <p>Once you have ngrok installed navigate in your terminal to the same location on your computer where you installed ngrok and run</p>
+    <pre><code data-language="javascript">
+    ./ngrok http 3000
+    </code></pre>
+            <p>This will create a forwarding URL that will point to your local server port 3000.</p>
+            <p>Back in your partner dahsboard, under app info, we are going to change the app URL to be the secure URL provided by ngrok. We'll also add this url with the redirect to the whitelisted redirect URLS. Something like <strong>https://ngrokurl.io/auth/shopify/callback</strong>.</p>
+            <p>Restart your rails server and navigate back to the app in your development store</p>
+            <p>You should now see the home view for your app with a list of linked products 🙌</p>
+            <p>** Note ** on the free version of ngrok each time the tunnel is quit and restarted a new URL will be generated. You would then need to update this URL in your app that you created in your Shopify Partner Account.</p>
+        </section>
+        <section>
+            <h2 class="primary-title">Displaying Content in Our Application</h2>
+            <p>We are going to be displaying a list of all of our product from our shop in our app that will link to an individual page for each product.</p>
+            <p>To do this let's create a new controller for our products. In the controller folder make a new file called <strong>products_controller.rb</strong>. Open the file and add the following:</p>
+    <pre><code data-language="ruby">
+    class ProductsController < ShopifyApp::AuthenticatedController
+
+    end
+    </code></pre>
+            <p>Note that we are going to set up our Products controller to inheret from the Shopify App Authenticated controller (this was generated using the app gem).</p>
+            <p>Next, in the controller let's create two actions, one for the products index and one for the product individual page</p>
+    <pre><code data-language="ruby">
+    class ProductsController < ShopifyApp::AuthenticatedController
+      def index
         
-    </section>
-    <section>
-        <h2>Getting Started on Shopify</h2>
-        <p>Shopify offers a multitude of resources to help with development. One of these tools is the Shopify partner account. With a partner account you can create development stores to test out your themes and applicaitons.</p>
-        <p>To get started today make sure you have a partner account. You can <a href="https://www.shopify.ca/partners" target="_blank">sign up for a partner account</a></p>
-        <p>Now create a development store. This will act as a sandbox where we can use our app. Once you have created your development store log in to the store admin and take a look around.</p>
-        <p>In the app we create today we are going to work with product information from the Shopify store. Let's set up our store with some products so that we have something to look at in our app later. Download <a href="bicycles.csv" download>this product csv</a> and upload it to the products section in your store.</p>
-    </section>
-    <section>
-        <h2>Create a new rails application</h2>
-        <p>Now that we have our store set up we are going to create our application. We'll start by creating a new Rails application and then we'll set it up to authenticate with our Shopify store.</p>
-        <p>If you're not familiar with Ruby on Rails, no problem. We are going to use a few terminal commands to create a new Ruby on Rails application and set it up with the <a href="https://github.com/Shopify/shopify_app" target="_blank">Shopify App Gem</a> to fecilitate authenticaiton.</p>
-        <p>To start open your terminal and navigate to wherever on your computer you would like to keep your application. Once in the correct directory, create a new Ruby on Rails application by running:</p>
-        <pre><code>
-            rails new [appname]
-        </code></pre>
-        <p>Then go into the root directory of your app</p>
-        <pre><code>
-            $ cd [appname]
-        </code></pre>
-        <p>Once in the root directory of your app run</p>
-        <pre><code>
-            echo "gem 'shopify_app'" >> Gemfile
-        </code></pre>
-        <p>This will add the shopify_app gem to your gemfile. You can open up your Gemfile and see wherer the gem was added</p>
-        <p>Finally, still in the root directory, run</p>
-        <pre><code>
-            $ bundle install
-        </code></pre>
-        <p>That gives us the base set up for our applicaiton. Let's start up the rails server and check out our app locally. Running the following command in the root directory of your app will start up the server.</p>
-        <pre><code>
-            rails s
-        </code></pre>
-    </section>
-    <section>
-        <h2>Get Your App Token and Secret</h2>
-        <p>Now that we have created our Rails application we are going to generate an app token and secret on the Shopify end.</p>
-        <p>Back in your partner dashboard navigate to the apps tab and create a new app.</p>
-        <img src="images/create-new-app.png" alt="">
-        <p>You can call your app whatever you like. Where it says <strong>app url</strong> for now we are going to put in the localhost address where our rails application is being served. This is likely <strong>http://localhost:3000/</strong>. Make sure you include the url protocol.</p>
-        <p>Create the app and then under overview make sure you white list the following redirection url <strong>http://localhost:3000/auth/shopify/callback</strong></p>
-        <p>Now that you have created the app, we are going to grab the credentials we need to authenticate. At the top you'll see a green box with a button to <strong>Get API credentials</strong>.</p>
-        <img src="images/get-api-credentials.png" alt="">
-        <p>Down at the bottom of the screen in the <strong>App credentials</strong> section you'll see you have your <strong>API key</strong> and <strong>API secret key</strong>. Keep this page open as we will be using these in a second.</p>
-        <p>Back in your terminal, still in the root directory of your app, we are going to run the shopify app gem default generator to create the install, shop and home_controller.</p>
-        <pre><code>
-            rails generate shopify_app --apikey your_api_key --secret your_secret
-        </code></pre>
-        <p>The generator will create a new migration. Under db > migrate in your rails app check out the create shops migration. It should look something like this:</p>
-        <pre><code>
-            class CreateShops < ActiveRecord::Migration[5.0]
-              def self.up
-                create_table :shops  do |t|
-                  t.string :shopify_domain, null: false
-                  t.string :shopify_token, null: false
-                  t.timestamps
-                end
-
-                add_index :shops, :shopify_domain, unique: true
-              end
-
-              def self.down
-                drop_table :shops
-              end
-            end
-        </code></pre>
-        <p>If all looks good run the migration</p>
-        <pre><code>
-            $ rake db:migrate
-        </code></pre>
-        <p>Check out the <strong>schema.rb</strong> file and you'll see you should have a shops table.</p>
-        <p>Let's bring it all together. In your terminal start up your rails application by running</p>
-        <pre><code>
-            $ rails s
-        </code></pre>
-        <p>Head to http://localhost:3000/ and you should see a screen where you can input the shop name to connect your app. Enter in the url for your development store.</p>
-        <p>You'll probably see a screen that looks something like this:</p>
-        <img src="images/error-screen.png" alt="">
-        <p>We're seeing this because we haven't finished hooking up our Rails applciaiton with the app credentials we generated in Shopify. We'll do that next✨</p>
-
-    </section>
-    <section>
-        <h2>Setting Up Your Environment Variables</h2>
-        <p>In order to authenticate our app we need to include the api key and secret, but we want to make sure that these are not publicly available. To do so we will use the rails dotenv gem.</p>
-        <p>In your gemfile add:</p>
-        <pre><code>
-            #Gemfile
-            gem 'dotenv-rails'
-        </code></pre>
-        <p>In your terminal run</p>
-        <pre><code>
-            $ bundle install
-        </code></pre>
-        <p>In the root of your project create a new .env file. Make sure to include this file in your .gitignore so you do not push your private keys public later.</p>
-        <p>In your .env file add:</p>
-        <pre><code>
-            #.env
-            api_key=your_api_key
-            api_secret=your_api_secret
-        </code></pre>
-        <p>In the config > initializers > shopify_app.rb file add the reference to your api_key and api_secret environment variables. It will look something like this:</p>
-        <pre><code>
-            ShopifyApp.configure do |config|
-              config.application_name = "My Shopify App"
-              config.api_key = ENV['api_key']
-              config.secret = ENV['api_secret']
-              config.scope = "read_orders, read_products"
-              config.embedded_app = true
-              config.after_authenticate_job = false
-              config.session_repository = Shop
-            end
-        </code></pre>
-        <p>We're just about ready to connect the app to our development store. We just need to check one more configuration on the app we created in the Shopify Partner dashboard to make sure it is enabled as an embeded application. Click on the app you created and navigate to the extensions tab. Make sure that the section <strong>Embed in Shopify admin</strong> is enabled.</p>
-        <p>Great! We are now ready to install our app on our dev store. Make sure your rails server is running and navigate to <strong>http://localhost:3000</strong>.</p>
-        <img src="images/install-app-screen.png" alt="">
-        <p>Enter the name of your store and install your app.</p>
-        <p>When you open up your app you'll likely see a screen like this:</p>
-        <img src="images/requests-blocked-screen.png" alt="">
-        <p>We will be addressing this next.</p>
-    </section>
-    <section>
-        <h2>Setting up ngrok for secure local development</h2>
-        <p>We are seeing the error screen above because our app on http://localhost:3000 is not being served over a secure network. In order to get our embeded app to work we need to make sure our app has an SSL certificate. To set this up for local development we are going to use a service called <a href="https://ngrok.com/" target="_blank">ngrok</a>.</p>
-        <p>Let's get ngrok set up.</p>
-        <p>Sign up or log in to the ngrok site and download the version of ngrok for your system.</p>
-        <p>Once you have ngrok installed navigate in your terminal to the same location on your computer where you installed ngrok and run</p>
-        <pre><code>
-            ./ngrok http 3000
-        </code></pre>
-        <p>This will create a forwarding URL that will point to your local server port 3000.</p>
-        <p>Back in your partner dahsboard, under app info, we are going to change the app URL to be the secure URL provided by ngrok. We'll also add this url with the redirect to the whitelisted redirect URLS. Something like <strong>https://ngrokurl.io/auth/shopify/callback</strong>.</p>
-        <p>Restart your rails server and navigate back to the app in your development store</p>
-        <p>You should now see the home view for your app with a list of linked products 🙌</p>
-        <p>** Note ** on the free version of ngrok each time the tunnel is quit and restarted a new URL will be generated. You would then need to update this URL in your app that you created in your Shopify Partner Account.</p>
-    </section>
-    <section>
-        <h2>Displaying Content in Our Application</h2>
-        <p>We are going to be displaying a list of all of our product from our shop in our app that will link to an individual page for each product.</p>
-        <p>To do this let's create a new controller for our products. In the controller folder make a new file called <strong>products_controller.rb</strong>. Open the file and add the following:</p>
-        <pre><code>
-            class ProductsController < ShopifyApp::AuthenticatedController
+      end
+      def show
         
-            end
-        </code></pre>
-        <p>Note that we are going to set up our Products controller to inheret from the Shopify App Authenticated controller (this was generated using the app gem).</p>
-        <p>Next, in the controller let's create two actions, one for the products index and one for the product individual page</p>
-        <pre><code>
-            class ProductsController < ShopifyApp::AuthenticatedController
-              def index
-                
-              end
-              def show
-                
-              end
-            end
-        </code></pre>
-        <p>Now that we have created the controller for our Products, let's set up the views. In the views folder, create a new folder called products. In there we are going to create two new files <strong>index.html.erb</strong> and <strong>show.html.erb</strong>. These correspond to the two methods we set up in our controller earlier.</p>
-        <p>Add a title in each html file correpsonding to the view.</p>
-        <p>The final piece to set up our index and single view is to configure the routes. In the config folder open up the <strong>routes.rb</strong> file.</p>
-        <p>We are going to create two new routes, one to the product index page and the other to the single product page</p>
-        <pre><code>
-            get 'products', to: 'products#index'
+      end
+    end
+    </code></pre>
+            <p>Now that we have created the controller for our Products, let's set up the views. In the views folder, create a new folder called products. In there we are going to create two new files <strong>index.html.erb</strong> and <strong>show.html.erb</strong>. These correspond to the two methods we set up in our controller earlier.</p>
+            <p>Add a title in each html file correpsonding to the view.</p>
+            <p>The final piece to set up our index and single view is to configure the routes. In the config folder open up the <strong>routes.rb</strong> file.</p>
+            <p>We are going to create two new routes, one to the product index page and the other to the single product page</p>
+    <pre><code data-language="ruby">
+    get 'products', to: 'products#index'
 
-            get 'products/:id', to: 'products#show', as: 'product'
-        </code></pre>
-    </section>
-    <section>
-        <h2>Display Product Information</h2>
-        <p>In order to display information from our Shopify store in our app we need to query the <a href="https://help.shopify.com/api/reference" target="_blank">Admin API</a>. We are going to leverage the modules provided by the shopify app gem to make these requests.</p>
-        <p>Back in the products controller, let's start by defining a products variable as the first 10 products called in from our store:</p>
-        <pre><code>
-            def index
-              @products = ShopifyAPI::Product.find(:all, params: { limit: 10 })
-            end
-        </code></pre>
-        <p>Now let's make a request for a single product in the show action</p>
-        <pre><code>
-            @product = ShopifyAPI::Product.find(params[:id])
-        </code></pre>
-        <p>Here we will use the id parameter from the url to make a request for that particular product. Later on in our views when we are setting up the links to our single product page we'll make sure to pass the Shopify product id to our url helper as that is what we'll be using to make a request for the specific product.</p>
-        <p>Now that we have set up our controller let's actually display the product info on our page. Starting with the homepage, we'll make a link to 'View Products'</p>
-        <pre><code>
-            <%= link_to 'View Products', products_path%>
-        </code></pre>
-        <p>Now in the products/index.html.erb let's list out our product with links to the single product page.</p>
-        <pre><code>
-            <% @products.each do |product|%>
-                <%= link_to product.title, product_path(product)%>
-            <% end %>
-        </code></pre>
-        <p>Finally on the product/show.html.erb page let's display some product info.</p>
-        <pre><code>
-            <h2><%= @product.title %></h2>
-            <p><%= @product.vendor%></p>
-            <p><strong>tags:</strong> <%= @product.tags%></p>
-        </code></pre>
+    get 'products/:id', to: 'products#show', as: 'product'
+    </code></pre>
+        </section>
+        <section>
+            <h2 class="primary-title">Display Product Information</h2>
+            <p>In order to display information from our Shopify store in our app we need to query the <a href="https://help.shopify.com/api/reference" target="_blank">Admin API</a>. We are going to leverage the modules provided by the shopify app gem to make these requests.</p>
+            <p>Back in the products controller, let's start by defining a products variable as the first 10 products called in from our store:</p>
+    <pre><code data-language="ruby">
+    def index
+      @products = ShopifyAPI::Product.find(:all, params: { limit: 10 })
+    end
+    </code></pre>
+            <p>Now let's make a request for a single product in the show action</p>
+    <pre><code data-language="ruby">
+    @product = ShopifyAPI::Product.find(params[:id])
+    </code></pre>
+            <p>Here we will use the id parameter from the url to make a request for that particular product. Later on in our views when we are setting up the links to our single product page we'll make sure to pass the Shopify product id to our url helper as that is what we'll be using to make a request for the specific product.</p>
+            <p>Now that we have set up our controller let's actually display the product info on our page. Starting with the homepage, we'll make a link to 'View Products'</p>
+    <pre><code data-language="html">
+    <%= link_to 'View Products', products_path%>
+    </code></pre>
+            <p>Now in the products/index.html.erb let's list out our product with links to the single product page.</p>
+    <pre><code data-language="html">
+    <% @products.each do |product|%>
+        <%= link_to product.title, product_path(product)%>
+    <% end %>
+    </code></pre>
+            <p>Finally on the product/show.html.erb page let's display some product info.</p>
+    <pre><code data-language="html">
+    <h2><%= @product.title %></h2>
+    <p><%= @product.vendor%></p>
+    <p><strong>tags:</strong> <%= @product.tags%></p>
+    </code></pre>
 
-    </section>
-    <section>
-        <h2>Create a view for the single product</h2>
-        <p>create new controller for the products</p>
-        <p>create an action for the index and for the show. This will act as your product listings and single product</p>
-        <p>create the corresponding views</p>
-        <p>Add routes for your product views</p>
-        <p>Display content on the page</p>
-    </section>
+        </section>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="rainbowcustom.min.js"></script>
+    <script>
+        jQuery(document).ready(function($){
+          Rainbow.color();
+          // console.log(Rainbow)
+        });
+    </script>
 </body>
 </html
