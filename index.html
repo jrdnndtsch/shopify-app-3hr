@@ -151,6 +151,66 @@
     </section>
     <section>
         <h2>Displaying Content in Our Application</h2>
+        <p>We are going to be displaying a list of all of our product from our shop in our app that will link to an individual page for each product.</p>
+        <p>To do this let's create a new controller for our products. In the controller folder make a new file called <strong>products_controller.rb</strong>. Open the file and add the following:</p>
+        <pre><code>
+            class ProductsController < ShopifyApp::AuthenticatedController
+        
+            end
+        </code></pre>
+        <p>Note that we are going to set up our Products controller to inheret from the Shopify App Authenticated controller (this was generated using the app gem).</p>
+        <p>Next, in the controller let's create two actions, one for the products index and one for the product individual page</p>
+        <pre><code>
+            class ProductsController < ShopifyApp::AuthenticatedController
+              def index
+                
+              end
+              def show
+                
+              end
+            end
+        </code></pre>
+        <p>Now that we have created the controller for our Products, let's set up the views. In the views folder, create a new folder called products. In there we are going to create two new files <strong>index.html.erb</strong> and <strong>show.html.erb</strong>. These correspond to the two methods we set up in our controller earlier.</p>
+        <p>Add a title in each html file correpsonding to the view.</p>
+        <p>The final piece to set up our index and single view is to configure the routes. In the config folder open up the <strong>routes.rb</strong> file.</p>
+        <p>We are going to create two new routes, one to the product index page and the other to the single product page</p>
+        <pre><code>
+            get 'products', to: 'products#index'
+
+            get 'products/:id', to: 'products#show', as: 'product'
+        </code></pre>
+    </section>
+    <section>
+        <h2>Display Product Information</h2>
+        <p>In order to display information from our Shopify store in our app we need to query the <a href="https://help.shopify.com/api/reference" target="_blank">Admin API</a>. We are going to leverage the modules provided by the shopify app gem to make these requests.</p>
+        <p>Back in the products controller, let's start by defining a products variable as the first 10 products called in from our store:</p>
+        <pre><code>
+            def index
+              @products = ShopifyAPI::Product.find(:all, params: { limit: 10 })
+            end
+        </code></pre>
+        <p>Now let's make a request for a single product in the show action</p>
+        <pre><code>
+            @product = ShopifyAPI::Product.find(params[:id])
+        </code></pre>
+        <p>Here we will use the id parameter from the url to make a request for that particular product. Later on in our views when we are setting up the links to our single product page we'll make sure to pass the Shopify product id to our url helper as that is what we'll be using to make a request for the specific product.</p>
+        <p>Now that we have set up our controller let's actually display the product info on our page. Starting with the homepage, we'll make a link to 'View Products'</p>
+        <pre><code>
+            <%= link_to 'View Products', products_path%>
+        </code></pre>
+        <p>Now in the products/index.html.erb let's list out our product with links to the single product page.</p>
+        <pre><code>
+            <% @products.each do |product|%>
+                <%= link_to product.title, product_path(product)%>
+            <% end %>
+        </code></pre>
+        <p>Finally on the product/show.html.erb page let's display some product info.</p>
+        <pre><code>
+            <h2><%= @product.title %></h2>
+            <p><%= @product.vendor%></p>
+            <p><strong>tags:</strong> <%= @product.tags%></p>
+        </code></pre>
+
     </section>
     <section>
         <h2>Create a view for the single product</h2>
