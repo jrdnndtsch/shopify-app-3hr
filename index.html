@@ -83,6 +83,44 @@
         <pre><code>
             $ rake db:migrate
         </code></pre>
+        <p>Check out the <strong>schema.rb</strong> file and you'll see you should have a shops table.</p>
+        <p>Let's bring it all together. In your terminal start up your rails application by running</p>
+        <pre><code>
+            $ rails s
+        </code></pre>
+        <p>Head to http://localhost:3000/ and you should see a screen where you can input the shop name to connect your app.</p>
+    </section>
+    <section>
+        <h2>Setting Up Your Environment Variables</h2>
+        <p>In order to authenticate our app we need to include the api key and secret, but we want to make sure that these are not publicly available. To do so we will use the rails dotenv gem.</p>
+        <p>In your gemfile add:</p>
+        <pre><code>
+            #Gemfile
+            gem 'dotenv-rails'
+        </code></pre>
+        <p>In your terminal run</p>
+        <pre><code>
+            $ bundle install
+        </code></pre>
+        <p>In the root of your project create a new .env file. Make sure to include this file in your .gitignore so you do not push your private keys public later.</p>
+        <p>In your .env file add:</p>
+        <pre><code>
+            #.env
+            api_key=your_api_key
+            api_secret=your_api_secret
+        </code></pre>
+        <p>In the config > initializers > shopify_app.rb file add the reference to your api_key and api_secret environment variables. It will look something like this:</p>
+        <pre><code>
+            ShopifyApp.configure do |config|
+              config.application_name = "My Shopify App"
+              config.api_key = ENV['api_key']
+              config.secret = ENV['api_secret']
+              config.scope = "read_orders, read_products"
+              config.embedded_app = true
+              config.after_authenticate_job = false
+              config.session_repository = Shop
+            end
+        </code></pre>
     </section>
     <section>
         <h2>Create the App in Your Admin Panel</h2>
