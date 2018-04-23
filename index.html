@@ -11,17 +11,26 @@
         <h1>Shopify App Workshop</h1>
     </header>
     <section>
+        <h2>Welcome to Shopify App Development</h2>
+        <p>Shopify embedded apps are a wonderful way to extend the functionality of your store and provide a seamless experience for the vendor. Today we will go through setting up a custom embeded application. We will be leveraging tools provided by Shopify to help us get our app authenticated and up and running. One of the major benefits of creating an app in this way is that we will be able to embed the app directly in our merchants Shopify admin.</p>
+        
+    </section>
+    <section>
         <h2>Getting Started on Shopify</h2>
-        <p>make sure you have a partner account <a href="https://www.shopify.ca/partners" target="_blank">sign up for a partner account</a></p>
-        <p>Now create a development store. This will act as a sandbox where we can use our app.</p>
-        <p>Upload a product csv to your store so that you have some products to look at in your app later on.</p>
+        <p>Shopify offers a multitude of resources to help with development. One of these tools is the Shopify partner account. With a partner account you can create development stores to test out your themes and applicaitons.</p>
+        <p>To get started today make sure you have a partner account. You can <a href="https://www.shopify.ca/partners" target="_blank">sign up for a partner account</a></p>
+        <p>Now create a development store. This will act as a sandbox where we can use our app. Once you have created your development store log in to the store admin and take a look around.</p>
+        <p>In the app we create today we are going to work with product information from the Shopify store. Let's set up our store with some products so that we have something to look at in our app later. Download <a href="bicycles.csv" download>this product csv</a> and upload it to the products section in your store.</p>
     </section>
     <section>
         <h2>Create a new rails application</h2>
+        <p>Now that we have our store set up we are going to create our application. We'll start by creating a new Rails application and then we'll set it up to authenticate with our Shopify store.</p>
+        <p>If you're not familiar with Ruby on Rails, no problem. We are going to use a few terminal commands to create a new Ruby on Rails application and set it up with the <a href="https://github.com/Shopify/shopify_app" target="_blank">Shopify App Gem</a> to fecilitate authenticaiton.</p>
+        <p>To start open your terminal and navigate to wherever on your computer you would like to keep your application. Once in the correct directory, create a new Ruby on Rails application by running:</p>
         <pre><code>
-            rails new appname
+            rails new [appname]
         </code></pre>
-        <p>then go into the root directory of your app</p>
+        <p>Then go into the root directory of your app</p>
         <pre><code>
             $ cd [appname]
         </code></pre>
@@ -29,11 +38,16 @@
         <pre><code>
             echo "gem 'shopify_app'" >> Gemfile
         </code></pre>
-        <p>This will add the shopify_app gem to your gemfile.</p>
+        <p>This will add the shopify_app gem to your gemfile. You can open up your Gemfile and see wherer the gem was added</p>
         <p>Finally, still in the root directory, run</p>
         <pre><code>
             $ bundle install
         </code></pre>
+        <p>That gives us the base set up for our applicaiton. Let's start up the rails server and check out our app locally. Running the following command in the root directory of your app will start up the server.</p>
+        <pre><code>
+            rails s
+        </code></pre>
+
     </section>
     <section>
         <h2>The Shopify App Gem</h2>
