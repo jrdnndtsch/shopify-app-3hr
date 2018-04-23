@@ -138,10 +138,16 @@
         <h2>Setting up ngrok for secure local development</h2>
         <p>We are seeing the error screen above because our app on http://localhost:3000 is not being served over a secure network. In order to get our embeded app to work we need to make sure our app has an SSL certificate. To set this up for local development we are going to use a service called <a href="https://ngrok.com/" target="_blank">ngrok</a>.</p>
         <p>Let's get ngrok set up.</p>
-        <p>get people to install ngrok before arriving</p>
-        <p>install ngrok together</p>
-        <p>need to remember location of ngrok installation</p>
-        <p>make sure the app urls are set to your ngrok url</p>
+        <p>Sign up or log in to the ngrok site and download the version of ngrok for your system.</p>
+        <p>Once you have ngrok installed navigate in your terminal to the same location on your computer where you installed ngrok and run</p>
+        <pre><code>
+            ./ngrok http 3000
+        </code></pre>
+        <p>This will create a forwarding URL that will point to your local server port 3000.</p>
+        <p>Back in your partner dahsboard, under app info, we are going to change the app URL to be the secure URL provided by ngrok. We'll also add this url with the redirect to the whitelisted redirect URLS. Something like <strong>https://ngrokurl.io/auth/shopify/callback</strong>.</p>
+        <p>Restart your rails server and navigate back to the app in your development store</p>
+        <p>You should now see the home view for your app with a list of linked products 🙌</p>
+        <p>** Note ** on the free version of ngrok each time the tunnel is quit and restarted a new URL will be generated. You would then need to update this URL in your app that you created in your Shopify Partner Account.</p>
     </section>
     <section>
         <h2>The admin API</h2>
