@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h1>Shopify App Workshop</h1>
+    </header>
+    <section>
+        <h2>Getting Started on Shopify</h2>
+        <p>make sure you have a partner account <a href="https://www.shopify.ca/partners" target="_blank">sign up for a partner account</a></p>
+        <p>Now create a development store. This will act as a sandbox where we can use our app.</p>
+        <p>Upload a product csv to your store so that you have some products to look at in your app later on.</p>
+    </section>
+    <section>
+        <h2>Create a new rails application</h2>
+        <pre><code>
+            rails new appname
+        </code></pre>
+        <p>then go into the root directory of your app</p>
+        <pre><code>
+            $ cd [appname]
+        </code></pre>
+        <p>Once in the root directory of your app run</p>
+        <pre><code>
+            echo "gem 'shopify_app'" >> Gemfile
+        </code></pre>
+        <p>This will add the shopify_app gem to your gemfile.</p>
+        <p>Finally, still in the root directory, run</p>
+        <pre><code>
+            $ bundle install
+        </code></pre>
+    </section>
+    <section>
+        <h2>The Shopify App Gem</h2>
+        <p>Shopify has made it easy to set up your app environment with their gem. You can check out the documentation for the gem <a href="http://shopify.github.io/shopify_app/" target="_blank">here</a>. A major win using the app_gem is the ease of </p>
+    </section>
+    <section>
+        <h2>Create the App in Your Admin Panel</h2>
+    </section>
+    <section>
+        <h2>Setting up ngrok for secure local development</h2>
+        <p>get people to install ngrok before arriving</p>
+        <p>install ngrok together</p>
+        <p>need to remember location of ngrok installation</p>
+        <p>make sure the app urls are set to your ngrok url</p>
+    </section>
+    <section>
+        <h2>The admin API</h2>
+    </section>
+    <section>
+        <h2>Create a view for the single product</h2>
+        <p>create new controller for the products</p>
+        <p>create an action for the index and for the show. This will act as your product listings and single product</p>
+        <p>create the corresponding views</p>
+        <p>Add routes for your product views</p>
+        <p>Display content on the page</p>
+    </section>
+</body>
+</html
