@@ -70,8 +70,9 @@ code, kbd, pre, samp {
 
 /* line 1, /Users/jordandeutsch/Documents/UA5/internal-apps/code-shopify-blog/app/assets/stylesheets/_normalize.scss */
 pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  /*white-space: pre-wrap;*/
+  /*word-wrap: break-word;*/
+  overflow: scroll;
 }
 
 /* line 1, /Users/jordandeutsch/Documents/UA5/internal-apps/code-shopify-blog/app/assets/stylesheets/_normalize.scss */
@@ -322,7 +323,7 @@ pre .preloader div {
 /* line 8, /Users/jordandeutsch/Documents/UA5/internal-apps/code-shopify-blog/app/assets/stylesheets/_normalize.scss */
 pre {
   background-color: #000;
-  word-wrap: break-word;
+  /*word-wrap: break-word;*/
   margin: 0px;
   padding: 10px;
   color: #fff;
@@ -498,8 +499,8 @@ code, kbd, pre, samp {
 
 /* line 1, /Users/jordandeutsch/Documents/UA5/internal-apps/code-shopify-blog/app/assets/stylesheets/layout/normalize.scss */
 pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  /*white-space: pre-wrap;*/
+  /*word-wrap: break-word;*/
 }
 
 /* line 1, /Users/jordandeutsch/Documents/UA5/internal-apps/code-shopify-blog/app/assets/stylesheets/layout/normalize.scss */

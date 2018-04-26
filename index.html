@@ -55,7 +55,7 @@
             <p>Back in your partner dashboard navigate to the apps tab and create a new app.</p>
             <img src="images/create-new-app.png" alt="">
             <p>You can call your app whatever you like. Where it says <strong>app url</strong> for now we are going to put in the localhost address where our rails application is being served. This is likely <strong>http://localhost:3000/</strong>. Make sure you include the url protocol.</p>
-            <p>Create the app and then under overview make sure you white list the following redirection url <strong>http://localhost:3000/auth/shopify/callback</strong></p>
+            <p>Create the app and then under App info make sure you white list the following redirection url <strong>http://localhost:3000/auth/shopify/callback</strong></p>
             <p>Now that you have created the app, we are going to grab the credentials we need to authenticate. At the top you'll see a green box with a button to <strong>Get API credentials</strong>.</p>
             <img src="images/get-api-credentials.png" alt="">
             <p>Down at the bottom of the screen in the <strong>App credentials</strong> section you'll see you have your <strong>API key</strong> and <strong>API secret key</strong>. Keep this page open as we will be using these in a second.</p>
@@ -91,9 +91,10 @@
     $ rails s
     </code></pre>
             <p>Head to http://localhost:3000/ and you should see a screen where you can input the shop name to connect your app. Enter in the url for your development store.</p>
+            <img src="images/install-app-screen.png" alt="">
             <p>You'll probably see a screen that looks something like this:</p>
             <img src="images/error-screen.png" alt="">
-            <p>We're seeing this because we haven't finished hooking up our Rails applciaiton with the app credentials we generated in Shopify. We'll do that next✨</p>
+            <p>We're seeing this because we haven't finished hooking up our Rails application with the app credentials we generated in Shopify. We'll do that next✨</p>
 
         </section>
         <section>
@@ -131,6 +132,9 @@
             <p>Great! We are now ready to install our app on our dev store. Make sure your rails server is running and navigate to <strong>http://localhost:3000</strong>.</p>
             <img src="images/install-app-screen.png" alt="">
             <p>Enter the name of your store and install your app.</p>
+            <p>You will be redirected to a screen to approve the installation of the app</p>
+            <img src="images/install-app.png" alt="">
+            <p>For a split second you may see the view from our rails app, but will be redirected to the embeded view.</p>
             <p>When you open up your app you'll likely see a screen like this:</p>
             <img src="images/requests-blocked-screen.png" alt="">
             <p>We will be addressing this next.</p>
@@ -201,9 +205,11 @@
     </code></pre>
             <p>Now in the products/index.html.erb let's list out our product with links to the single product page.</p>
     <pre><code data-language="html">
-    <% @products.each do |product|%>
-        <%= link_to product.title, product_path(product)%>
-    <% end %>
+    <ul> 
+        <% @products.each do |product|%>
+            <li><%= link_to product.title, product_path(product)%></li>
+        <% end %>
+    </ul>
     </code></pre>
             <p>Finally on the product/show.html.erb page let's display some product info.</p>
     <pre><code data-language="html">
