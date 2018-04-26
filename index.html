@@ -21,7 +21,16 @@
             <p>Shopify offers a multitude of resources to help with development. One of these tools is the Shopify partner account. With a partner account you can create development stores to test out your themes and applicaitons.</p>
             <p>To get started today make sure you have a partner account. You can <a href="https://www.shopify.ca/partners" target="_blank">sign up for a partner account</a></p>
             <p>Now create a development store. This will act as a sandbox where we can use our app. Once you have created your development store log in to the store admin and take a look around.</p>
+
+            <img src="./images/create-dev-store.jpg" alt="">
+
             <p>In the app we create today we are going to work with product information from the Shopify store. Let's set up our store with some products so that we have something to look at in our app later. Download <a href="bicycles.csv" download>this product csv</a> and upload it to the products section in your store.</p>
+
+            <img src="./images/import-products.jpg" alt="">
+
+            <p>To view your store you can click on the eye icon besides <code>online store</code></p>
+
+            <img src="./images/view-store.jpg" alt="">
         </section>
         <section>
             <h2 class="primary-title">Create a new rails application</h2>
@@ -91,6 +100,7 @@
     $ rails s
     </code></pre>
             <p>Head to http://localhost:3000/ and you should see a screen where you can input the shop name to connect your app. Enter in the url for your development store.</p>
+            <img src="./images/store-url.jpg" alt="">
             <p>You'll probably see a screen that looks something like this:</p>
             <img src="images/error-screen.png" alt="">
             <p>We're seeing this because we haven't finished hooking up our Rails applciaiton with the app credentials we generated in Shopify. We'll do that next✨</p>
@@ -109,6 +119,7 @@
     $ bundle install
     </code></pre>
             <p>In the root of your project create a new .env file. Make sure to include this file in your .gitignore so you do not push your private keys public later.</p>
+            <img src="./images/app-credentials.jpg" alt="">
             <p>In your .env file add:</p>
     <pre><code data-language="ruby">
     #.env
@@ -171,7 +182,7 @@
       end
     end
     </code></pre>
-            <p>Now that we have created the controller for our Products, let's set up the views. In the views folder, create a new folder called products. In there we are going to create two new files <strong>index.html.erb</strong> and <strong>show.html.erb</strong>. These correspond to the two methods we set up in our controller earlier.</p>
+            <p>Now that we have created the controller for our Products, let's set up the views. In the views folder, create a new folder called <strong>products</strong>. In there we are going to create two new files <strong>index.html.erb</strong> and <strong>show.html.erb</strong>. These correspond to the two methods we set up in our controller earlier.</p>
             <p>Add a title in each html file correpsonding to the view.</p>
             <p>The final piece to set up our index and single view is to configure the routes. In the config folder open up the <strong>routes.rb</strong> file.</p>
             <p>We are going to create two new routes, one to the product index page and the other to the single product page</p>
@@ -192,7 +203,9 @@
     </code></pre>
             <p>Now let's make a request for a single product in the show action</p>
     <pre><code data-language="ruby">
-    @product = ShopifyAPI::Product.find(params[:id])
+    def show
+        @product = ShopifyAPI::Product.find(params[:id])
+    end
     </code></pre>
             <p>Here we will use the id parameter from the url to make a request for that particular product. Later on in our views when we are setting up the links to our single product page we'll make sure to pass the Shopify product id to our url helper as that is what we'll be using to make a request for the specific product.</p>
             <p>Now that we have set up our controller let's actually display the product info on our page. Starting with the homepage, we'll make a link to 'View Products'</p>
@@ -209,9 +222,19 @@
     <pre><code data-language="html">
     <h2><%= @product.title %></h2>
     <p><%= @product.vendor%></p>
+    <img src="<%= @product.images[0].src %>"  style="max-width: 50%;" alt="">
     <p><strong>tags:</strong> <%= @product.tags%></p>
     </code></pre>
 
+        </section>
+        <section>
+            <h2 class="primary-title">Resources</h2>
+            <ul>
+                <li><a href="https://polaris.shopify.com/" target="_blank">Polaris</a></li>
+                <li><a href="https://developers.shopify.com/" target="_blank">Shopify Developer Portal</a></li>
+                <li><a href="http://www.codeshopify.com/" target="_blank">Code Shopify Blog</a></li>
+            </ul>
+            
         </section>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
